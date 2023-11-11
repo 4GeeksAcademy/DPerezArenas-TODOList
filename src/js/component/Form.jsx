@@ -1,70 +1,47 @@
 import React, { useState } from "react";
 
-
 const Form = () => {
-    const [toDo, setToDo] = useState('');
-    const [list, setList] = useState([]);
-    // const [mouseOver, setMouseOver] = useState(null);
 
-    const handleList = (e) => {
-        setToDo(e.target.value)
-    }
+    const [inputValue, setInputValue] = useState('');
+    const [todos, setTodos] = useState([]);
 
-    const handleKeyPress = (e) => {
-
-        if (e.key === "Enter" && toDo.trim() !== '') {
-            setList([...list, toDo]);
-            setToDo('');
-        }
-    };
-
-    /* const handleMouseOver = (index) => {
-        setMouseOver(index);
-    }; */
-
-    const handleDelete = (index) => {
-        setList(list.filter((id, element) => {
-            return index !== element
-        }))
-    };
 
     return (
-        <div className="container">
-            <h1>To Do List</h1>
-            <ul className="list-group" aria-labelledby="addToDo">
+        <div className="container-fluid">
+            <ul className="list-group text-center">
+                <h1>Mis Tareas por hacer</h1>
                 <li className="list-group-item">
                     <input
+                        className="border-0 form-control p-0"
                         type="text"
-                        htmlFor=""
-                        value={toDo}
-                        className="form-control p-0"
-                        style={{ border: "none" }}
-                        onChange={handleList}
-                        onKeyDown={handleKeyPress}
-                        placeholder="Añadir tarea"
-                        aria-label="ToDo"
-                        aria-describedby="addToDo" >
-                    </input>
+                        placeholder="¿Qué necesitas hacer?"
+                        value={inputValue}
+                        onChange={e => setInputValue(e.target.value)}
+                        // onClick={e => setInputValue(e.target.value)}
+                        onKeyDown={e => {
+                            if (e.key === 'Enter') {
+                                setTodos(todos.concat(inputValue))
+                                setInputValue('');
+                            }
+                        }}
+                    />
                 </li>
-                
-                {list.map((item, index) => (
-                    <li
-                        key={index}
-                        className="list-group-item d-flex justify-content-between align-items-center hidden-icon"
-                        /* onMouseOver={() => handleMouseOver(index)} */ >
-                        {item}
-                        {/* {mouseOver === index && ( */}
-                            <span className="fa fa-times"
-                                style={{ cursor: "pointer" }}
-                                onClick={() => handleDelete(index)}
-                            />
-                        {/* )} */}
+                {todos.map((item, index) =>(
+                    <li className="list-group-item d-flex justify-content-between align-items-center hidden-icon" key={index}>
+                        {item} <span className="fa fa-times"
+                            style={{ cursor: "pointer" }}
+                            onClick={() => setTodos(todos.filter((t, currentIndex) => index !== currentIndex))}
+                        />
                     </li>
                 ))}
+                
             </ul>
-            <div className="text-start">{list.length === 0 ? 'No hay tareas, añadir tareas' : list.length + ' item left'}</div>
+            <div>{todos.length === 0 ? 'No hay tareas, añadir tareas' : todos.length === 1 ? '1 Tarea por hacer' : todos.length + ' Tareas por hacer'}</div>
+
+            <button className="btn btn-success mt-3">Añadir tarea</button>
         </div>
-    );
-};
+    )
+
+}
 
 export default Form;
